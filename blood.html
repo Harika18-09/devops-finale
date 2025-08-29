@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blood Donation Finder</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #E6E6FA, #D8BFD8); /* Lavender gradient */
+      color: #333;
+      text-align: center;
+      min-height: 100vh;
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.2);
+      color: black;
+      padding: 30px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .container {
+      margin-top: 40px;
+    }
+
+    .btn {
+      background: #FFB6C1; /* Light pink */
+      color: black; /* Black text */
+      border: none;
+      padding: 12px 25px;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background: #ff9eb3; /* Slightly darker pink on hover */
+    }
+
+    .form-box {
+      display: none;
+      margin: 20px auto;
+      padding: 20px;
+      width: 300px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+      color: #333;
+    }
+    .form-box input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .nav {
+      margin: 20px 0;
+    }
+
+    .page {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .profile-box, .find-box, .donate-box {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      margin: auto;
+      width: 320px;
+      border-radius: 10px;
+      color: #333;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .search-bar input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px 0 0 6px;
+    }
+    .search-bar button {
+      border-radius: 0 6px 6px 0;
+    }
+
+    .results {
+      margin-top: 15px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    “Donate Blood, Save Lives – A few minutes of your time can give someone a lifetime.”
+  </header>
+
+  <div class="container" id="homePage">
+    <button class="btn" onclick="showForm('loginForm')">Login</button>
+    <button class="btn" onclick="showForm('registerForm')">Register</button>
+
+    <div id="loginForm" class="form-box">
+      <h3>Login</h3>
+      <input type="text" placeholder="Username"><br>
+      <input type="password" placeholder="Password"><br>
+      <button class="btn" onclick="goToMain()">Login</button>
+    </div>
+
+    <div id="registerForm" class="form-box">
+      <h3>Register</h3>
+      <input type="text" placeholder="Name"><br>
+      <input type="text" placeholder="Phone Number"><br>
+      <input type="text" placeholder="Pin Code"><br>
+      <input type="text" placeholder="City"><br>
+      <input type="text" placeholder="Address"><br>
+      <button class="btn" onclick="goToMain()">Register</button>
+    </div>
+  </div>
+
+  <div id="mainPage" class="hidden">
+    <div class="nav">
+      <button class="btn" onclick="showPage('profilePage')">Profile</button>
+      <button class="btn" onclick="showPage('findPage')">Find</button>
+      <button class="btn" onclick="showPage('donatePage')">Donate</button>
+    </div>
+
+    <div id="profilePage" class="page">
+      <div class="profile-box">
+        <h3>My Profile</h3>
+        <p><strong>Name:</strong> Sample User</p>
+        <p><strong>Phone:</strong> 9876543210</p>
+        <p><strong>City:</strong> Hyderabad</p>
+        <p><strong>Pin Code:</strong> 500001</p>
+      </div>
+    </div>
+
+    <div id="findPage" class="page">
+      <div class="find-box">
+        <h3>Find Blood Donor</h3>
+        <div class="search-bar">
+          <input type="text" id="bloodGroup" placeholder="Enter Blood Group">
+          <button class="btn" onclick="findDonors()">Search</button>
+        </div>
+        <div id="donorResults" class="results"></div>
+      </div>
+    </div>
+
+    <div id="donatePage" class="page">
+      <div class="donate-box">
+        <h3>Donate Blood</h3>
+        <button class="btn" onclick="showNeeded()">Donate Now</button>
+        <div id="neededList" class="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showForm(formId) {
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("registerForm").style.display = "none";
+      document.getElementById(formId).style.display = "block";
+    }
+
+    function goToMain() {
+      document.getElementById("homePage").style.display = "none";
+      document.getElementById("mainPage").classList.remove("hidden");
+      showPage('profilePage');
+    }
+
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach(p => p.style.display = "none");
+      document.getElementById(pageId).style.display = "block";
+    }
+
+    function findDonors() {
+      let group = document.getElementById("bloodGroup").value.trim();
+      let donors = {
+        "A+": [
+          {name: "Ravi", phone: "9876543210"},
+          {name: "Kiran", phone: "9876500001"}
+        ],
+        "B+": [
+          {name: "Sita", phone: "9876543222"},
+          {name: "Rahul", phone: "9876500002"}
+        ],
+        "O-": [
+          {name: "Anjali", phone: "9876543333"}
+        ]
+      };
+      let results = donors[group] || [];
+      let output = results.length > 0 ? results.map(d => `<p><strong>${d.name}</strong> - ${d.phone}</p>`).join("") : "<p>No donors found.</p>";
+      document.getElementById("donorResults").innerHTML = output;
+    }
+
+    function showNeeded() {
+      let list = `
+        <p><strong>Ramesh</strong> - B+ needed in Hyderabad - 📞 9876501234</p>
+        <p><strong>Sneha</strong> - O- needed in Vizag - 📞 9876505678</p>
+        <p><strong>Akash</strong> - A+ needed in Vijayawada - 📞 9876509999</p>
+      `;
+      document.getElementById("neededList").innerHTML = list;
+    }
+  </script>
+</body>
+</html>
